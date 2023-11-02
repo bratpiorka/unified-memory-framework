@@ -76,6 +76,10 @@ if(UMF_BUILD_LIBUMF_POOL_DISJOINT)
     add_umf_test(NAME c_api_disjoint_pool
                  SRCS c_api/disjoint_pool.c
                  LIBS disjoint_pool)
+    # TODO move coarse to separate lib, add if
+    add_umf_test(NAME disjointFixedMallocPool 
+                 SRCS disjointFixedMallocPool.cpp
+                 LIBS disjoint_pool)
 endif()
 
 if(UMF_BUILD_OS_MEMORY_PROVIDER)
@@ -106,3 +110,5 @@ if(UMF_BUILD_OS_MEMORY_PROVIDER AND LINUX) # OS-specific functions are implement
                  SRCS memspace_numa.cpp
                  LIBS numa)
 endif()
+
+
