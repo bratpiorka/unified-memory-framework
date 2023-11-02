@@ -9,13 +9,14 @@ add_subdirectory(utils)
 set(UMF_LIBS umf_utils)
 
 set(UMF_SOURCES
+    critnib/critnib.c
     memory_pool.c
     memory_provider.c
     memory_provider_get_last_failed.c
     memory_target.c
     memspace.c
     provider/provider_tracking.c
-    critnib/critnib.c
+    provider/provider_fixed.c
 )
 
 set(UMF_SOURCES_LINUX
