@@ -77,8 +77,8 @@ if(UMF_BUILD_LIBUMF_POOL_DISJOINT)
                  SRCS c_api/disjoint_pool.c
                  LIBS disjoint_pool)
     # TODO move coarse to separate lib, add if
-    add_umf_test(NAME disjointFixedMallocPool 
-                 SRCS disjointFixedMallocPool.cpp
+    add_umf_test(NAME disjointCoarseMallocPool 
+                 SRCS disjointCoarseMallocPool.cpp
                  LIBS disjoint_pool)
 endif()
 

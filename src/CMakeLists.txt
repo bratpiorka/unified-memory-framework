@@ -16,7 +16,7 @@ set(UMF_SOURCES
     memory_target.c
     memspace.c
     provider/provider_tracking.c
-    provider/provider_fixed.c
+    provider/provider_coarse.c
 )
 
 set(UMF_SOURCES_LINUX
