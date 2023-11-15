@@ -2,7 +2,7 @@
 # Under the Apache License v2.0 with LLVM Exceptions. See LICENSE.TXT.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10.0 FATAL_ERROR) #14
 project(unified-memory-framework VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -154,9 +154,9 @@ install(
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Configure the package versions file for use in find_package when installed.
-write_basic_package_version_file(
-    ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config-version.cmake
-    COMPATIBILITY SameMajorVersion)
+# write_basic_package_version_file(
+#     ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config-version.cmake
+#     COMPATIBILITY SameMajorVersion)
 
 # Configure the package file that is searched for by find_package when
 # installed.
