@@ -17,6 +17,7 @@ set(UMF_SOURCES
     memspace.c
     provider/provider_tracking.c
     provider/provider_coarse.c
+    ravl/ravl.c
 )
 
 set(UMF_SOURCES_LINUX
