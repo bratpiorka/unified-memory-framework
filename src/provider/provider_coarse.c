@@ -19,8 +19,8 @@
 #include <string.h>
 
 #include "../ravl/ravl.h"
-#include <../utils/utils_concurrency.h>
-#include <provider/provider_coarse.h>
+#include "umf/providers/provider_coarse.h"
+#include "utils_concurrency.h"
 
 #ifndef BYTE
 #define BYTE unsigned char
