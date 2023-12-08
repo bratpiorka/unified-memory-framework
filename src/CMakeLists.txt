@@ -10,14 +10,14 @@ set(UMF_SOURCES
     memory_provider.c
     memory_provider_get_last_failed.c
     pool/pool_disjoint.cpp
-    provider/provider_os_memory.c
+    # provider/provider_os_memory.c
     provider/provider_tracking.c
     provider/provider_coarse.c
     ravl/ravl.c
 )
 
 set(UMF_SOURCES_LINUX
-    provider/provider_os_memory_linux.c
+    #provider/provider_os_memory_linux.c
     utils/utils_posix_concurrency.c
     utils/utils_posix_math.c
 )
