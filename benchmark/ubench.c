@@ -8,6 +8,7 @@
  */
 
 #include <umf/memory_pool.h>
+#include <umf/providers/provider_coarse.h>
 #include <umf/providers/provider_os_memory.h>
 
 #ifdef UMF_BUILD_LIBUMF_POOL_DISJOINT
@@ -33,6 +34,10 @@
 
 // OS MEMORY PROVIDER CONFIG
 #define OS_MEMORY_PROVIDER_TRACE (0)
+
+// COARSE MEMORY PROVIDER CONFIG
+#define COARSE_MEMORY_PROVIDER_INIT_BUFFER_SIZE (2 * N_ITERATIONS * ALLOC_SIZE)
+#define COARSE_MEMORY_PROVIDER_TRACE (0)
 
 // DISJOINT POOL CONFIG
 #define DISJOINT_POOL_SLAB_MIN_SIZE (ALLOC_SIZE)
@@ -163,6 +168,50 @@ UBENCH_EX(simple, os_memory_provider) {
     ((defined UMF_BUILD_LIBUMF_POOL_DISJOINT) ||                               \
      (defined UMF_BUILD_LIBUMF_POOL_JEMALLOC) ||                               \
      (defined UMF_BUILD_LIBUMF_POOL_SCALABLE))
+
+////////////////// COARSE WITH OS MEMORY PROVIDER
+
+UBENCH_EX(simple, coarse_with_os_memory_provider) {
+    alloc_t *array = alloc_array(N_ITERATIONS);
+
+    enum umf_result_t umf_result;
+    umf_memory_provider_handle_t os_memory_provider = NULL;
+    umf_result = umfMemoryProviderCreate(&UMF_OS_MEMORY_PROVIDER_OPS,
+                                         &UMF_OS_MEMORY_PROVIDER_PARAMS,
+                                         &os_memory_provider);
+    if (umf_result != UMF_RESULT_SUCCESS) {
+        exit(-1);
+    }
+
+    coarse_memory_provider_params_t coarse_memory_provider_params = {
+        os_memory_provider, // upstream_memory_provider
+        COARSE_MEMORY_PROVIDER_INIT_BUFFER_SIZE,
+        true,                         // immediate_init
+        COARSE_MEMORY_PROVIDER_TRACE, // trace
+    };
+
+    umf_memory_provider_handle_t coarse_memory_provider;
+    umfMemoryProviderCreate(&UMF_COARSE_MEMORY_PROVIDER_OPS,
+                            &coarse_memory_provider_params,
+                            &coarse_memory_provider);
+    if (umf_result != UMF_RESULT_SUCCESS) {
+        exit(-1);
+    }
+
+    do_benchmark(array, N_ITERATIONS, w_umfMemoryProviderAlloc,
+                 w_umfMemoryProviderFree, coarse_memory_provider); // WARMUP
+
+    UBENCH_DO_BENCHMARK() {
+        do_benchmark(array, N_ITERATIONS, w_umfMemoryProviderAlloc,
+                     w_umfMemoryProviderFree, coarse_memory_provider);
+    }
+
+    umfMemoryProviderDestroy(coarse_memory_provider);
+    umfMemoryProviderDestroy(os_memory_provider);
+    free(array);
+}
+
+////////////////// DISJOINT POOL WITH OS MEMORY PROVIDER
 
 static void *w_umfPoolMalloc(void *provider, size_t size, size_t alignment) {
     umf_memory_pool_handle_t hPool = (umf_memory_pool_handle_t)provider;
