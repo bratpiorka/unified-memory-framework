@@ -14,6 +14,7 @@
 
 #include <umf/pools/pool_disjoint.h>
 #include <umf/providers/provider_coarse.h>
+#include <umf/providers/provider_os_memory.h>
 
 using umf_test::test;
 
