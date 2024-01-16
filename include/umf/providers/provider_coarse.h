@@ -27,12 +27,15 @@ typedef struct coarse_memory_provider_stats_t {
     size_t free_blocks_num;
 } coarse_memory_provider_stats_t;
 
-extern struct umf_memory_provider_ops_t UMF_COARSE_MEMORY_PROVIDER_OPS;
+// todo EXPORT?
+UMF_EXPORT extern struct umf_memory_provider_ops_t
+    UMF_COARSE_MEMORY_PROVIDER_OPS;
 
-coarse_memory_provider_stats_t
+UMF_EXPORT coarse_memory_provider_stats_t
 umfCoarseMemoryProviderGetStats(umf_memory_provider_handle_t provider);
 
-umf_memory_provider_handle_t umfCoarseMemoryProviderGetUpstreamProvider(
+UMF_EXPORT umf_memory_provider_handle_t
+umfCoarseMemoryProviderGetUpstreamProvider(
     umf_memory_provider_handle_t provider);
 
 #ifdef __cplusplus

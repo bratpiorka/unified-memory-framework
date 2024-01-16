@@ -137,12 +137,12 @@ UMF_EXPORT umf_result_t umfMemoryProviderPurgeForce(
     umf_memory_provider_handle_t hProvider, void *ptr, size_t size);
 
 // TODO documentation
-enum umf_result_t
+UMF_EXPORT umf_result_t
 umfMemoryProviderAllocSplit(umf_memory_provider_handle_t hProvider, void *ptr,
                             size_t size1, size_t size2);
 
 // TODO documentation
-enum umf_result_t
+UMF_EXPORT umf_result_t
 umfMemoryProviderAllocMerge(umf_memory_provider_handle_t hProvider, void *ptr1,
                             size_t size1, void *ptr2, size_t size2);
 ///

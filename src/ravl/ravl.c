@@ -13,9 +13,9 @@
  */
 
 #include "ravl.h"
+#include "../src/utils/utils_common.h"
+#include "../src/utils/utils_concurrency.h"
 #include "assert.h"
-#include "utils_common.h"
-#include "utils_concurrency.h"
 
 #include <errno.h>
 #include <stdint.h>
