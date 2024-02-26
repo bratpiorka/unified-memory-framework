@@ -84,7 +84,6 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'ubuntu-22.04']
-        build_type: [Debug, Release]
         compiler: [{c: gcc, cxx: g++}]
         pool_tracking: ['ON', 'OFF']
         shared_library: ['OFF']
@@ -92,40 +91,33 @@ jobs:
         sanitizers: [{asan: OFF, ubsan: OFF, tsan: OFF}]
         include:
           - os: 'ubuntu-20.04'
-            build_type: Release
             compiler: {c: gcc-7, cxx: g++-7}
             shared_library: 'OFF'
             os_provider: 'ON'
           - os: 'ubuntu-22.04'
-            build_type: Release
             compiler: {c: clang, cxx: clang++}
             shared_library: 'OFF'
             os_provider: 'ON'
           - os: 'ubuntu-22.04'
-            build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
             os_provider: 'ON'
           - os: 'ubuntu-22.04'
-            build_type: Debug
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
             os_provider: 'ON'
           # test os_provider='OFF' with shared_library='ON'
           - os: 'ubuntu-22.04'
-            build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
             os_provider: 'OFF'
           # test os_provider='OFF' with shared_library='OFF'
           - os: 'ubuntu-22.04'
-            build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'OFF'
             os_provider: 'OFF'
           # TODO: Move jobs with sanitizer checks to a separate workflow file.
           - os: 'ubuntu-22.04'
-            build_type: Debug
             compiler: {c: clang, cxx: clang++}
             pool_tracking: 'ON'
             shared_library: 'OFF'
@@ -133,21 +125,18 @@ jobs:
           # TSAN is mutually exclusive with other sanitizers
             sanitizers: {asan: ON, ubsan: ON, tsan: OFF}
           - os: 'ubuntu-22.04'
-            build_type: Debug
             compiler: {c: clang, cxx: clang++}
             pool_tracking: 'ON'
             shared_library: 'OFF'
             os_provider: 'ON'
             sanitizers: {asan: OFF, ubsan: OFF, tsan: ON}
           - os: 'ubuntu-22.04'
-            build_type: Debug
             compiler: {c: gcc, cxx: g++}
             pool_tracking: 'ON'
             shared_library: 'OFF'
             os_provider: 'ON'
             sanitizers: {asan: ON, ubsan: ON, tsan: OFF}
           - os: 'ubuntu-22.04'
-            build_type: Debug
             compiler: {c: gcc, cxx: g++}
             pool_tracking: 'ON'
             shared_library: 'OFF'
@@ -169,49 +158,61 @@ jobs:
         run: |
           sudo apt-get install -y ${{matrix.compiler.cxx}}
 
-      - name: Configure build
+      - name: Configure and build
         run: >
-          cmake
-          -B ${{env.BUILD_DIR}}
-          -DCMAKE_INSTALL_PREFIX="${{env.INSTL_DIR}}"
-          -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-          -DUMF_BUILD_SHARED_LIBRARY=${{matrix.shared_library}}
-          -DCMAKE_C_COMPILER=${{matrix.compiler.c}}
-          -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}
-          -DUMF_BUILD_OS_MEMORY_PROVIDER=${{matrix.os_provider}}
-          -DUMF_ENABLE_POOL_TRACKING=${{matrix.pool_tracking}}
-          -DUMF_FORMAT_CODE_STYLE=OFF
-          -DUMF_DEVELOPER_MODE=ON
-          -DUMF_BUILD_LIBUMF_POOL_JEMALLOC=ON
-          -DUMF_BUILD_LIBUMF_POOL_DISJOINT=ON
-          -DUMF_BUILD_LIBUMF_POOL_SCALABLE=ON
-          -DUSE_ASAN=${{matrix.sanitizers.asan}}
-          -DUSE_UBSAN=${{matrix.sanitizers.ubsan}}
-          -DUSE_TSAN=${{matrix.sanitizers.tsan}}
+          for BUILD_TYPE in Debug Release;
+          do
+            cmake
+            -B ${{env.BUILD_DIR}}_${BUILD_TYPE} 
+            -DCMAKE_INSTALL_PREFIX="${{env.INSTL_DIR}}_${BUILD_TYPE}"
+            -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+            -DUMF_BUILD_SHARED_LIBRARY=${{matrix.shared_library}}
+            -DCMAKE_C_COMPILER=${{matrix.compiler.c}}
+            -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}
+            -DUMF_BUILD_OS_MEMORY_PROVIDER=${{matrix.os_provider}}
+            -DUMF_ENABLE_POOL_TRACKING=${{matrix.pool_tracking}}
+            -DUMF_FORMAT_CODE_STYLE=OFF
+            -DUMF_DEVELOPER_MODE=ON
+            -DUMF_BUILD_LIBUMF_POOL_JEMALLOC=ON
+            -DUMF_BUILD_LIBUMF_POOL_DISJOINT=ON
+            -DUMF_BUILD_LIBUMF_POOL_SCALABLE=ON
+            -DUSE_ASAN=${{matrix.sanitizers.asan}}
+            -DUSE_UBSAN=${{matrix.sanitizers.ubsan}}
+            -DUSE_TSAN=${{matrix.sanitizers.tsan}};
 
-      - name: Build UMF
-        run: |
-          cmake --build ${{env.BUILD_DIR}} -j $(nproc)
+            cmake --build ${{env.BUILD_DIR}}_${BUILD_TYPE} -j $(nproc);
+          done
 
       - name: Run tests
-        working-directory: ${{env.BUILD_DIR}}
         run: |
-          ctest --output-on-failure
+          for BUILD_TYPE in Debug Release
+          do
+            cd ${{env.BUILD_DIR}}_${BUILD_TYPE}
+            ctest --output-on-failure
+          done
 
       - name: Test make install
         # Run only when the example is built
         # TODO: Modify installation test to accept output varying with build options
         if: matrix.os_provider == 'ON' && matrix.pool_tracking == 'ON'
-        working-directory: ${{env.BUILD_DIR}}
-        run: ${{github.workspace}}/test/test_make_install.sh \
-              ${{github.workspace}} ${{env.BUILD_DIR}} ${{env.INSTL_DIR}} ${{matrix.build_type}} ${{matrix.shared_library}}
+        run: |
+          for BUILD_TYPE in Debug Release
+          do
+            cd ${{env.BUILD_DIR}}_${BUILD_TYPE}
+            ${{github.workspace}}/test/test_make_install.sh \
+                ${{github.workspace}} ${{env.BUILD_DIR}}_${BUILD_TYPE} ${{env.INSTL_DIR}}_${BUILD_TYPE} ${BUILD_TYPE} ${{matrix.shared_library}}
+          done
 
       - name: Test make uninstall
         # Run only when the example is built
         # TODO: Modify installation test to accept output varying with build options
         if: matrix.os_provider == 'ON' && matrix.pool_tracking == 'ON'
-        working-directory: ${{env.BUILD_DIR}}
-        run: ${{github.workspace}}/test/test_make_uninstall.sh ${{github.workspace}} ${{env.BUILD_DIR}} ${{env.INSTL_DIR}}
+        run: |
+          for BUILD_TYPE in Debug Release
+          do
+            cd ${{env.BUILD_DIR}}_${BUILD_TYPE}
+            ${{github.workspace}}/test/test_make_uninstall.sh ${{github.workspace}} ${{env.BUILD_DIR}}_${BUILD_TYPE} ${{env.INSTL_DIR}}_${BUILD_TYPE}
+          done
 
   windows-build:
     name: Build - Windows
@@ -277,7 +278,7 @@ jobs:
 
       - name: Configure build
         run: >
-          cmake
+          cmake 
           -B ${{env.BUILD_DIR}}
           ${{matrix.toolset}}
           -DCMAKE_C_COMPILER=${{matrix.compiler.c}}
