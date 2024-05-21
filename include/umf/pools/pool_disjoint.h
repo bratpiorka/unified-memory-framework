@@ -10,6 +10,7 @@ extern "C" {
 #include <umf/memory_pool.h>
 #include <umf/memory_provider.h>
 
+/// The default value for MinBucketSize
 #define UMF_DISJOINT_POOL_MIN_BUCKET_DEFAULT_SIZE ((size_t)8)
 
 /// @brief Memory limits that can be shared between multiple pool instances,
@@ -29,7 +30,8 @@ umfDisjointPoolSharedLimitsCreate(size_t MaxSize);
 void umfDisjointPoolSharedLimitsDestroy(
     umf_disjoint_pool_shared_limits_t *PoolLimits);
 
-/// @brief Configuration of Disjoint Pool
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Configuration struct of the Disjoint Pool
 typedef struct umf_disjoint_pool_params_t {
     /// Minimum allocation size that will be requested from the system.
     /// By default this is the minimum allocation size of each memory type.
