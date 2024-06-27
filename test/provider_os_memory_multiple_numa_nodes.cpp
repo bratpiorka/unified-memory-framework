@@ -212,7 +212,12 @@ TEST_P(testNumaOnEachNode, checkModeInterleaveSingleNode) {
     unsigned numa_node_number = GetParam();
 
     constexpr int pages_num = 1024;
-    size_t page_size = sysconf(_SC_PAGE_SIZE);
+
+    // Get the size of a page
+    int ret = sysconf(_SC_PAGE_SIZE);
+    ASSERT_GE(ret, 0);
+    size_t page_size = (size_t)ret;
+
     umf_os_memory_provider_params_t os_memory_provider_params =
         UMF_OS_MEMORY_PROVIDER_PARAMS_TEST;
 
@@ -340,7 +345,12 @@ TEST_F(testNuma, checkModeDefault) {
 // The page allocations are interleaved across the set of all available nodes.
 TEST_F(testNuma, checkModeInterleave) {
     constexpr int pages_num = 1024;
-    size_t page_size = sysconf(_SC_PAGE_SIZE);
+
+    // Get the size of a page
+    int ret = sysconf(_SC_PAGE_SIZE);
+    ASSERT_GE(ret, 0);
+    size_t page_size = (size_t)ret;
+
     umf_os_memory_provider_params_t os_memory_provider_params =
         UMF_OS_MEMORY_PROVIDER_PARAMS_TEST;
 
@@ -381,7 +391,12 @@ TEST_F(testNuma, checkModeInterleave) {
 // The page allocations are interleaved across the set of nodes specified in nodemask.
 TEST_F(testNuma, checkModeInterleaveCustomPartSize) {
     constexpr int part_num = 1024;
-    size_t page_size = sysconf(_SC_PAGE_SIZE);
+
+    // Get the size of a page
+    int ret = sysconf(_SC_PAGE_SIZE);
+    ASSERT_GE(ret, 0);
+    size_t page_size = (size_t)ret;
+
     size_t part_size = page_size * 100;
     umf_os_memory_provider_params_t os_memory_provider_params =
         UMF_OS_MEMORY_PROVIDER_PARAMS_TEST;
@@ -539,7 +554,12 @@ INSTANTIATE_TEST_SUITE_P(checkModeSplit, testNumaSplit,
 // positive test for numa mode split
 TEST_P(testNumaSplit, checkModeSplit) {
     auto param = GetParam();
-    size_t page_size = sysconf(_SC_PAGE_SIZE);
+
+    // Get the size of a page
+    int ret = sysconf(_SC_PAGE_SIZE);
+    ASSERT_GE(ret, 0);
+    size_t page_size = (size_t)ret;
+
     auto [required_numa_nodes, pages, in, out] = param;
 
     umf_os_memory_provider_params_t os_memory_provider_params =
