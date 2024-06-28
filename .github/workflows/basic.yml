@@ -286,6 +286,11 @@ jobs:
     strategy:
       matrix:
         build_type: [Release]
+        compiler: [{c: cl, cxx: cl}]
+        include:
+          - build_type: Release
+            compiler: {c: clang-cl, cxx: clang-cl}
+            toolset: "-T ClangCL"
 
     runs-on: 'windows-2022'
 
@@ -297,6 +302,9 @@ jobs:
       run: >
         cmake
         -B ${{env.BUILD_DIR}}
+        ${{matrix.toolset}}
+        -DCMAKE_C_COMPILER=${{matrix.compiler.c}}
+        -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}
         -DUMF_BUILD_SHARED_LIBRARY=OFF
         -DUMF_BUILD_EXAMPLES=OFF
         -DUMF_FORMAT_CODE_STYLE=OFF
