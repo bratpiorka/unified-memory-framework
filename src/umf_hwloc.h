@@ -12,7 +12,19 @@
 #pragma warning(disable : 4100)
 #endif // _MSC_VER
 
+// disable Clang warnings: "unreferenced parameter" and "unreferenced variable"
+// thrown in hwloc.h, as we do not want to modify this file
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif // __clang__
+
 #include <hwloc.h>
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif // __clang__
 
 #if defined(_MSC_VER)
 #pragma warning(pop)
