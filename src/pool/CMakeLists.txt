@@ -21,7 +21,7 @@ if(UMF_BUILD_LIBUMF_POOL_DISJOINT)
                                PRIVATE ${POOL_COMPILE_DEFINITIONS})
 
     if(WINDOWS)
-        target_compile_options(disjoint_pool PRIVATE /DWIN32_LEAN_AND_MEAN
+        target_compile_options(disjoint_pool PRIVATE /DWIN32_LEAN_AND_MEAN /EHsc
                                                      /DNOMINMAX)
     endif()
 

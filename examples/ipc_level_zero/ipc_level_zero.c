@@ -144,6 +144,11 @@ int main(void) {
     fprintf(stdout, "IPC handle opened in the consumer pool.\n");
 
     size_t *tmp_buf = malloc(BUFFER_SIZE);
+    if (tmp_buf == NULL) {
+        fprintf(stderr, "ERROR: Failed to allocate buffer!\n");
+        return -1;
+    }
+
     ret = level_zero_copy(consumer_context, device, tmp_buf, mapped_buf,
                           BUFFER_SIZE);
     if (ret != 0) {

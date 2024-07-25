@@ -216,6 +216,7 @@ function(add_umf_target_compile_options name)
                     /WX
                     /Gy
                     /GS
+                    /EHsc
                     # disable warning 6326: Potential comparison of a constant
                     # with another constant
                     /wd6326
