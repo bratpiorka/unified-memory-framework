@@ -246,14 +246,8 @@ INSTANTIATE_TEST_SUITE_P(
         LevelZeroProviderTestParams{l0Params_shared_memory, &hostAccessor},
         LevelZeroProviderTestParams{l0Params_host_memory, &hostAccessor}));
 
-// TODO: it looks like there is some problem with IPC implementation in Level
-// Zero on windows. Issue: #494
-#ifdef _WIN32
-GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(umfIpcTest);
-#else
 INSTANTIATE_TEST_SUITE_P(umfLevelZeroProviderTestSuite, umfIpcTest,
                          ::testing::Values(ipcTestParams{
                              umfProxyPoolOps(), nullptr,
                              umfLevelZeroMemoryProviderOps(),
                              &l0Params_device_memory, &l0Accessor}));
-#endif

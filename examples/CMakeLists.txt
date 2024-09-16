@@ -79,12 +79,9 @@ else()
             "to be turned ON - skipping")
 endif()
 
-# TODO: it looks like there is some problem with IPC implementation in Level
-# Zero on windows
 if(UMF_BUILD_GPU_EXAMPLES
    AND UMF_BUILD_LIBUMF_POOL_DISJOINT
-   AND UMF_BUILD_LEVEL_ZERO_PROVIDER
-   AND LINUX)
+   AND UMF_BUILD_LEVEL_ZERO_PROVIDER)
     set(EXAMPLE_NAME umf_example_ipc_level_zero)
 
     add_umf_executable(
