@@ -340,23 +340,35 @@ function(add_umf_ipc_test)
     endif()
 endfunction()
 
+if(NOT UMF_DISABLE_HWLOC)
+
+    if(WINDOWS)
+        set(UMF_IPC_LIBS ws2_32)
+    endif()
+
+    build_umf_test(
+        NAME
+        ipc_os_prov_consumer
+        SRCS
+        ipc_os_prov_consumer.c
+        common/ipc_common.c
+        common/ipc_os_prov_common.c
+        LIBS
+        ${UMF_IPC_LIBS})
+    build_umf_test(
+        NAME
+        ipc_os_prov_producer
+        SRCS
+        ipc_os_prov_producer.c
+        common/ipc_common.c
+        common/ipc_os_prov_common.c
+        LIBS
+        ${UMF_IPC_LIBS})
+    add_umf_ipc_test(TEST ipc_os_prov_anon_fd)
+endif()
+
 if(LINUX)
     if(NOT UMF_DISABLE_HWLOC)
-        build_umf_test(
-            NAME
-            ipc_os_prov_consumer
-            SRCS
-            ipc_os_prov_consumer.c
-            common/ipc_common.c
-            common/ipc_os_prov_common.c)
-        build_umf_test(
-            NAME
-            ipc_os_prov_producer
-            SRCS
-            ipc_os_prov_producer.c
-            common/ipc_common.c
-            common/ipc_os_prov_common.c)
-        add_umf_ipc_test(TEST ipc_os_prov_anon_fd)
         add_umf_ipc_test(TEST ipc_os_prov_shm)
 
         build_umf_test(
@@ -482,12 +494,12 @@ if(LINUX
         )
     endif()
 
-    if(LINUX AND UMF_POOL_SCALABLE_ENABLED)
+    if(UMF_POOL_SCALABLE_ENABLED)
         set(EXAMPLES ${EXAMPLES} ipc_ipcapi)
     else()
         message(
             STATUS
-                "IPC examples with UMF pool API are supported on Linux with TBB installed only - skipping"
+                "IPC examples with UMF pool API are supported with TBB installed only - skipping"
         )
     endif()
 
