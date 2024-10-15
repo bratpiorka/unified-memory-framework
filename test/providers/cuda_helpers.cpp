@@ -44,7 +44,7 @@ struct DlHandleCloser {
 std::unique_ptr<void, DlHandleCloser> cuDlHandle = nullptr;
 int InitCUDAOps() {
 #ifdef _WIN32
-    const char *lib_name = "cudart.dll";
+    const char *lib_name = "nvcuda.dll";
 #else
     const char *lib_name = "libcuda.so";
 #endif

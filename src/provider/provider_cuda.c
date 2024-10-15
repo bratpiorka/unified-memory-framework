@@ -92,7 +92,7 @@ static umf_result_t cu2umf_result(CUresult result) {
 
 static void init_cu_global_state(void) {
 #ifdef _WIN32
-    const char *lib_name = "cudart.dll";
+    const char *lib_name = "nvcuda.dll";
 #else
     const char *lib_name = "libcuda.so";
 #endif
@@ -138,6 +138,7 @@ static umf_result_t cu_memory_provider_initialize(void *params,
 
     if (cu_params->memory_type == UMF_MEMORY_TYPE_UNKNOWN ||
         cu_params->memory_type > UMF_MEMORY_TYPE_SHARED) {
+        LOG_ERR("Invalid memory type value");
         return UMF_RESULT_ERROR_INVALID_ARGUMENT;
     }
 
