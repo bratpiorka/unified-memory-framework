@@ -22,6 +22,18 @@ UMF_1.0 {
         umfDevDaxMemoryProviderParamsSetDeviceDax;
         umfDevDaxMemoryProviderParamsSetProtection;
         umfFree;
+        umfDisjointPoolOps;
+        umfDisjointPoolParamsCreate;
+        umfDisjointPoolParamsDestroy;
+        umfDisjointPoolParamsSetCapacity;
+        umfDisjointPoolParamsSetMaxPoolableSize;
+        umfDisjointPoolParamsSetMinBucketSize;
+        umfDisjointPoolParamsSetName;
+        umfDisjointPoolParamsSetSharedLimits;
+        umfDisjointPoolParamsSetSlabMinSize;
+        umfDisjointPoolParamsSetTrace;
+        umfDisjointPoolSharedLimitsCreate;
+        umfDisjointPoolSharedLimitsDestroy;
         umfFileMemoryProviderOps;
         umfFileMemoryProviderParamsCreate;
         umfFileMemoryProviderParamsDestroy;

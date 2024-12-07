@@ -28,6 +28,18 @@ EXPORTS
     umfDevDaxMemoryProviderParamsSetDeviceDax
     umfDevDaxMemoryProviderParamsSetProtection
     umfFree
+    umfDisjointPoolOps
+    umfDisjointPoolParamsCreate
+    umfDisjointPoolParamsDestroy
+    umfDisjointPoolParamsSetCapacity
+    umfDisjointPoolParamsSetMaxPoolableSize
+    umfDisjointPoolParamsSetMinBucketSize
+    umfDisjointPoolParamsSetName
+    umfDisjointPoolParamsSetSharedLimits
+    umfDisjointPoolParamsSetSlabMinSize
+    umfDisjointPoolParamsSetTrace
+    umfDisjointPoolSharedLimitsCreate
+    umfDisjointPoolSharedLimitsDestroy
     umfFileMemoryProviderOps
     umfFileMemoryProviderParamsCreate
     umfFileMemoryProviderParamsDestroy

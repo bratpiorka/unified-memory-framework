@@ -304,8 +304,6 @@ class UmfInstallationTester:
         build_dir = Path(workspace_dir, self.args.build_dir)
         install_dir = Path(workspace_dir, self.args.install_dir)
         pools = []
-        if self.args.disjoint_pool:
-            pools.append("disjoint_pool")
         if self.args.jemalloc_pool:
             pools.append("jemalloc_pool")
 
