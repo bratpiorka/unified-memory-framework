@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Intel Corporation
+ * Copyright (C) 2024-2025 Intel Corporation
  *
  * Under the Apache License v2.0 with LLVM Exceptions. See LICENSE.TXT.
  * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
@@ -63,7 +63,6 @@ UMF_BENCHMARK_REGISTER_F(alloc_benchmark, proxy_pool)
     ->Threads(4)
     ->Threads(1);
 
-#ifdef UMF_POOL_DISJOINT_ENABLED
 UMF_BENCHMARK_TEMPLATE_DEFINE(alloc_benchmark, disjoint_pool_fix,
                               fixed_alloc_size,
                               pool_allocator<disjoint_pool<os_provider>>);
@@ -82,7 +81,6 @@ UMF_BENCHMARK_REGISTER_F(alloc_benchmark, disjoint_pool_uniform)
     //    ->Threads(4)
     ->Threads(1);
 */
-#endif
 
 #ifdef UMF_POOL_JEMALLOC_ENABLED
 UMF_BENCHMARK_TEMPLATE_DEFINE(alloc_benchmark, jemalloc_pool_fix,
@@ -157,7 +155,6 @@ UMF_BENCHMARK_REGISTER_F(multiple_malloc_free_benchmark, os_provider)
     ->Threads(4)
     ->Threads(1);
 
-#ifdef UMF_POOL_DISJOINT_ENABLED
 UMF_BENCHMARK_TEMPLATE_DEFINE(multiple_malloc_free_benchmark, disjoint_pool_fix,
                               fixed_alloc_size,
                               pool_allocator<disjoint_pool<os_provider>>);
@@ -175,7 +172,6 @@ UMF_BENCHMARK_REGISTER_F(multiple_malloc_free_benchmark, disjoint_pool_uniform)
     ->Threads(4)
     ->Threads(1);
 */
-#endif
 
 #ifdef UMF_POOL_JEMALLOC_ENABLED
 UMF_BENCHMARK_TEMPLATE_DEFINE(multiple_malloc_free_benchmark, jemalloc_pool_fix,
