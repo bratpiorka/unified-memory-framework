@@ -10,6 +10,9 @@
 // Temporary solution for disabling memory poisoning. This is needed because
 // AddressSanitizer does not support memory poisoning for GPU allocations.
 // More info: https://github.com/oneapi-src/unified-memory-framework/issues/634
+
+// TODO
+
 #ifndef POISON_MEMORY
 #undef __SANITIZE_ADDRESS__
 #endif
@@ -98,7 +101,15 @@ static slab_t *create_slab(bucket_t *bucket) {
     // ASSERT_IS_ALIGNED((uintptr_t)slab->mem_ptr, bucket->size);
 
     // raw allocation is not available for user so mark it as inaccessible
-    utils_annotate_memory_inaccessible(slab->mem_ptr, slab->slab_size);
+    //utils_annotate_memory_inaccessible(slab->mem_ptr, slab->slab_size);
+
+    for (size_t i = 0; i < slab->slab_size; i++) {
+        ((char *)slab->mem_ptr)[i] = 11;
+    }
+
+    int tid = utils_gettid();
+    LOG_FATAL("----- tid: %d poison c %p %zu", tid, slab->mem_ptr,
+              slab->slab_size);
 
     LOG_DEBUG("bucket: %p, slab_size: %zu", (void *)bucket, slab->slab_size);
     return slab;
@@ -533,6 +544,8 @@ static void *disjoint_pool_allocate(disjoint_pool_t *pool, size_t size) {
         }
 
         utils_annotate_memory_undefined(ptr, size);
+
+        LOG_FATAL("----- undef dpa %p %zu", ptr, size);
         return ptr;
     }
 
@@ -566,6 +579,8 @@ static void *disjoint_pool_allocate(disjoint_pool_t *pool, size_t size) {
 
     VALGRIND_DO_MEMPOOL_ALLOC(pool, ptr, size);
     utils_annotate_memory_undefined(ptr, bucket->size);
+
+    LOG_FATAL("----- undef dpa %p %zu", ptr, bucket->size);
     return ptr;
 }
 
@@ -714,6 +729,8 @@ void *disjoint_pool_aligned_malloc(void *pool, size_t size, size_t alignment) {
 
         assert(ptr);
         utils_annotate_memory_undefined(ptr, size);
+
+        LOG_FATAL("----- undef dpa2! %p %zu", ptr, size);
         return ptr;
     }
 
@@ -738,8 +755,6 @@ void *disjoint_pool_aligned_malloc(void *pool, size_t size, size_t alignment) {
         }
     }
 
-    utils_mutex_unlock(&bucket->bucket_lock);
-
     if (disjoint_pool->params.pool_trace > 2) {
         LOG_DEBUG("Allocated %8zu %s bytes aligned at %zu from %s -> %p", size,
                   disjoint_pool->params.name, alignment,
@@ -748,7 +763,18 @@ void *disjoint_pool_aligned_malloc(void *pool, size_t size, size_t alignment) {
 
     void *aligned_ptr = (void *)ALIGN_UP_SAFE((size_t)ptr, alignment);
     VALGRIND_DO_MEMPOOL_ALLOC(disjoint_pool, aligned_ptr, size);
-    utils_annotate_memory_undefined(aligned_ptr, size);
+
+    for (size_t i = 0; i < size; i++) {
+        assert(((char *)aligned_ptr)[i] == 11);
+        ((char *)aligned_ptr)[i] = 22;
+    }
+
+    // utils_annotate_memory_undefined(aligned_ptr, size);
+
+    int tid = utils_gettid();
+    LOG_FATAL("----- tid: %d undef dpa2 %p %zu", tid, aligned_ptr, size);
+
+    utils_mutex_unlock(&bucket->bucket_lock);
     return aligned_ptr;
 }
 
@@ -807,7 +833,17 @@ umf_result_t disjoint_pool_free(void *pool, void *ptr) {
     VALGRIND_DO_MEMPOOL_FREE(pool, ptr);
     utils_mutex_lock(&bucket->bucket_lock);
 
-    utils_annotate_memory_inaccessible(ptr, bucket->size);
+    //utils_annotate_memory_inaccessible(ptr, bucket->size);
+
+    for (size_t i = 0; i < bucket->size; i++) {
+        assert(((char *)ptr)[i] == 11 || ((char *)ptr)[i] == 22 ||
+               ((char *)ptr)[i] == 33);
+        ((char *)ptr)[i] = 11;
+    }
+
+    int tid = utils_gettid();
+    LOG_FATAL("----- tid: %d poison c %p %zu", tid, ptr, bucket->size);
+
     bucket_free_chunk(bucket, ptr, slab, &to_pool);
 
     if (disjoint_pool->params.pool_trace > 1) {
