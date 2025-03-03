@@ -5,12 +5,11 @@
  * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
  */
 
-#include "utils_level_zero.h"
-
 #include <memory>
 #include <stdlib.h>
 
 #include "utils_concurrency.h"
+#include "utils_level_zero.h"
 #include "utils_load_library.h"
 
 #include "ze_api.h"

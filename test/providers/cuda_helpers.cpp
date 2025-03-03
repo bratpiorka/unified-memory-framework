@@ -9,6 +9,7 @@
 #include <memory>
 #include <stdlib.h>
 
+#include "base.hpp"
 #include "cuda_helpers.h"
 #include "utils_concurrency.h"
 #include "utils_load_library.h"
