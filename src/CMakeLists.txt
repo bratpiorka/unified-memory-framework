@@ -87,6 +87,7 @@ set(UMF_SOURCES
     ravl/ravl.c
     pool/pool_proxy.c
     pool/pool_jemalloc.c
+    pool/pool_disjoint.cpp
     pool/pool_scalable.c)
 
 if(UMF_POOL_JEMALLOC_ENABLED)

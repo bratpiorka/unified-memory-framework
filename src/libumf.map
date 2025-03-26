@@ -111,6 +111,18 @@ UMF_0.10 {
         umfScalablePoolParamsDestroy;
         umfScalablePoolParamsSetGranularity;
         umfScalablePoolParamsSetKeepAllMemory;
+        umfDisjointPoolOps;
+        umfDisjointPoolParamsCreate;
+        umfDisjointPoolParamsDestroy;
+        umfDisjointPoolParamsSetCapacity;
+        umfDisjointPoolParamsSetMaxPoolableSize;
+        umfDisjointPoolParamsSetMinBucketSize;
+        umfDisjointPoolParamsSetName;
+        umfDisjointPoolParamsSetSharedLimits;
+        umfDisjointPoolParamsSetSlabMinSize;
+        umfDisjointPoolParamsSetTrace;
+        umfDisjointPoolSharedLimitsCreate;
+        umfDisjointPoolSharedLimitsDestroy;
     local:
         *;
 };

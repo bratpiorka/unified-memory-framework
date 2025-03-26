@@ -26,8 +26,8 @@
 #include "provider/provider_tracking.h"
 
 #include "../cpp_helpers.hpp"
-#include "pool_disjoint.h"
 #include "umf.h"
+#include "umf/pools/pool_disjoint.h"
 #include "utils_log.h"
 #include "utils_math.h"
 #include "utils_sanitizers.h"
