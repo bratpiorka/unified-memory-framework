@@ -7,8 +7,9 @@ include(${UMF_CMAKE_SOURCE_DIR}/cmake/helpers.cmake)
 set(COARSE_SOURCES coarse.c ../ravl/ravl.c)
 
 if(UMF_BUILD_SHARED_LIBRARY AND (NOT WINDOWS))
-    set(COARSE_EXTRA_SRCS ${BA_SOURCES})
-    set(COARSE_EXTRA_LIBS $<BUILD_INTERFACE:umf_utils>)
+    set(COARSE_EXTRA_SRCS)
+    set(COARSE_EXTRA_LIBS $<BUILD_INTERFACE:umf_utils>
+                          $<BUILD_INTERFACE:umf_ba>)
 endif()
 
 add_umf_library(

@@ -1,4 +1,4 @@
-# Copyright (C) 2023-2024 Intel Corporation
+# Copyright (C) 2023-2025 Intel Corporation
 # Under the Apache License v2.0 with LLVM Exceptions. See LICENSE.TXT.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
@@ -28,8 +28,8 @@ endif()
 add_umf_library(
     NAME umf_proxy
     TYPE SHARED
-    SRCS ${BA_SOURCES} ${PROXY_SOURCES}
-    LIBS umf_utils ${PROXY_LIBS}
+    SRCS ${PROXY_SOURCES}
+    LIBS umf_utils umf_ba ${PROXY_LIBS}
     LINUX_MAP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/proxy_lib.map
     WINDOWS_DEF_FILE ${CMAKE_CURRENT_SOURCE_DIR}/proxy_lib.def)
 set_target_properties(umf_proxy PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
