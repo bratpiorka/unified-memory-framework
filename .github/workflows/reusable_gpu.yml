@@ -75,9 +75,17 @@ jobs:
       - name: Get information about platform
         if: matrix.os == 'Ubuntu'
         run: .github/scripts/get_system_info.sh
+          
+      - name: Cache restore
+        if: matrix.os == 'Windows'
+        uses: actions/cache/restore@v4
+        id: cache-restore
+        with:
+          path: ${{env.BUILD_DIR}}/vcpkg
+          key: reusable-gpu-${{matrix.os}}-${{hashFiles('**/lockfiles')}}
 
       - name: "[Win] Initialize vcpkg"
-        if: matrix.os == 'Windows'
+        if: steps.cache-restore.outcome.cache-hit != 'true' && matrix.os == 'Windows'
         uses: lukka/run-vcpkg@5e0cab206a5ea620130caf672fce3e4a6b5666a1 # v11.5
         with:
           vcpkgGitCommitId: ea2a964f9303270322cf3f2d51c265ba146c422d # 1.04.2025
@@ -85,7 +93,7 @@ jobs:
           vcpkgJsonGlob: '**/vcpkg.json'
 
       - name: "[Win] Install dependencies"
-        if: matrix.os == 'Windows'
+        if: steps.cache-restore.outcome.cache-hit != 'true' && matrix.os == 'Windows'
         run: vcpkg install --triplet x64-windows
 
       # note: disable all providers except the one being tested
@@ -139,6 +147,13 @@ jobs:
           ../scripts/coverage/coverage_capture.sh $COVERAGE_FILE_NAME
           mkdir -p ${{env.COVERAGE_DIR}}
           mv ./$COVERAGE_FILE_NAME ${{env.COVERAGE_DIR}}
+
+      - name: Cache save
+        if: steps.cache-restore.outcome.cache-hit != 'true' && matrix.os == 'Windows'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{env.BUILD_DIR}}/vcpkg
+          key: reusable-gpu-${{matrix.os}}-${{hashFiles('**/lockfiles')}}          
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ matrix.build_type == 'Debug' && matrix.os == 'Ubuntu' }}
