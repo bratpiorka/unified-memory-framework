@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // This file contains tests for UMF provider API
 
-#include "provider.hpp"
-#include "provider_null.h"
-#include "test_helpers.h"
-
 #include <gtest/gtest.h>
 #include <string>
 #include <unordered_map>
 #include <variant>
+
+#include "memory_properties_internal.h"
+#include "provider.hpp"
+#include "provider_null.h"
+#include "test_helpers.h"
 
 using umf_test::test;
 
@@ -26,7 +27,7 @@ TEST_F(test, memoryProviderTrace) {
     auto tracingProvider = umf_test::wrapProviderUnique(
         traceProviderCreate(nullProvider, true, &calls, trace));
 
-    size_t call_count = 0;
+    size_t call_count = 1; // get_name is called during initialization
 
     void *ptr;
     auto ret = umfMemoryProviderAlloc(tracingProvider.get(), 0, 0, &ptr);
@@ -64,8 +65,8 @@ TEST_F(test, memoryProviderTrace) {
     ret = umfMemoryProviderGetName(tracingProvider.get(), &pName);
     ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
     ASSERT_NE(pName, nullptr);
-    ASSERT_EQ(calls["name"], 1UL);
-    ASSERT_EQ(calls.size(), ++call_count);
+    ASSERT_EQ(calls["name"], 2UL);
+    ASSERT_EQ(calls.size(), call_count);
     ASSERT_EQ(std::string(pName), std::string("null"));
 
     ret = umfMemoryProviderPurgeLazy(tracingProvider.get(), &page_size,
