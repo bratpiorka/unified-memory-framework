@@ -154,7 +154,7 @@ static void init_cu_global_state(void) {
 #ifdef _WIN32
     const char *lib_name = "nvcuda.dll";
 #else
-    const char *lib_name = "libcuda.so.1";
+    const char *lib_name = "libcuda.so";
 #endif
     // The CUDA shared library should be already loaded by the user
     // of the CUDA provider. UMF just want to reuse it
@@ -162,6 +162,12 @@ static void init_cu_global_state(void) {
     void *lib_handle =
         utils_open_library(lib_name, UMF_UTIL_OPEN_LIBRARY_NO_LOAD);
     if (!lib_handle) {
+#if !defined(_WIN32)
+        // if library is not found, try to load it with .1 postfix
+        const char *lib_name_v1 = "libcuda.so.1";
+        lib_handle =
+            utils_open_library(lib_name_v1, UMF_UTIL_OPEN_LIBRARY_NO_LOAD);
+#endif
         LOG_ERR("Failed to open CUDA shared library");
         Init_cu_global_state_failed = true;
         return;
