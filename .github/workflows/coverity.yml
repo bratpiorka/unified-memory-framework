@@ -79,7 +79,7 @@ jobs:
   outstanding:
     name: Coverity outstanding defects
     # checks results of the last completed analysis (the new submission is analyzed asynchronously)
-    if: github.repository == 'oneapi-src/unified-memory-framework'
+    # if: github.repository == 'oneapi-src/unified-memory-framework'
     runs-on: ubuntu-latest
     steps:
     - name: Check server-side analysis status
